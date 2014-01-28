@@ -1,0 +1,11 @@
+/* Styles for Library Example */
+
+body, td  { font-family: Trebuchet MS; 
+	   color: navy;
+           background-color: silver; }
+        
+h1        { font-size: 200%; }
+
+.img      { width: 1.25in; height: 1.5in; }
+
+td        { padding: 0.15in; }

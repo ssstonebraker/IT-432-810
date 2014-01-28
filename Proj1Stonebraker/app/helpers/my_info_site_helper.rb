@@ -1,0 +1,2 @@
+module MyInfoSiteHelper
+end
