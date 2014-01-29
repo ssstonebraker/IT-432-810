@@ -28,8 +28,22 @@ rails new $PROJNAME > /dev/null || die "unable to create $PROJNAME"
 cd $PROJNAME
 
 print_status "Setting up controller ..."
-rails g controller MyInfoSite infopage myfavorites photos >/dev/null 2>&1 || die "Unable to create controller for $PROJNAME"
+rails g controller MyInfoSite infopage myfavorites photos  --skip-stylesheets >/dev/null 2>&1 || die "Unable to create controller for $PROJNAME"
 
+cat <<_eof > $SCRIPTPATH/$PROJNAME/Gemfile
+source 'https://rubygems.org'
+gem 'rails', '3.2.9'
+gem 'sqlite3'
+ gem 'zurb-foundation'
+group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+gem 'jquery-rails', '~> 2.3.0'
+_eof
+bundle install
+rails g foundation:install
 print_status "Setting up info page"
 
 
@@ -99,8 +113,11 @@ cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/layouts/application.html.erb
 
 
 <head>
+	<meta charset="utf-8" />
   <title><%= @title %></title>
-  <%= stylesheet_link_tag 'library' %>
+ 	<%= stylesheet_link_tag    "application" %>
+  	<%= javascript_include_tag "vendor/custom.modernizr" %>
+    <%= csrf_meta_tags %>
 </head>
 <body>
 <nav class="top-bar">
@@ -138,46 +155,9 @@ cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/layouts/application.html.erb
 </body>
 </html>
 _eof
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/layouts/application2.html.erb
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html>
-<head>
-  <title><%= @title %></title>
-  <%= stylesheet_link_tag 'library' %>
-</head>
-<body>
-
-<h1><%= @title %></h1>
-
-<table>
-<tr>
-    <td><%= link_to 'Info Page', my_info_site_infopage_path %></td>
-    <td><%= link_to 'My Favorites Page', my_info_site_myfavorites_path %></td>
-    <td><%= link_to 'Photos Page', my_info_site_photos_path %></td> </td>
-</tr>
-</table>
-
-<hr />
-
-<%= yield %>
-
-</body>
-</html>
-_eof
-
-echo '
-//= require jquery
-//= require jquery_ujs
-//= require foundation
-//= require_tree .
 
 
-$(function(){ $(document).foundation(); });
-' >> $SCRIPTPATH/$PROJNAME/app/assets/javascripts/application.js
 
-echo '@import "foundation";' > $SCRIPTPATH/$PROJNAME/app/assets/stylesheets/application.css
 
 print_status "setting up images"
 pushd $SCRIPTPATH/$PROJNAME/app/assets/images >/dev/null 2>&1
@@ -196,20 +176,7 @@ print_status "replacing default route"
 sed -i '' "s/# root :to => 'welcome#index'/root :to => 'my_info_site#infopage'/g" $SCRIPTPATH/$PROJNAME/config/routes.rb
 [ -f $SCRIPTPATH/$PROJNAME/public/index.html ] && /bin/rm $SCRIPTPATH/$PROJNAME/public/index.html
 
-cat <<_eof > $SCRIPTPATH/$PROJNAME/Gemfile
-source 'https://rubygems.org'
-gem 'rails', '3.2.9'
-gem 'sqlite3'
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
-  gem 'compass-rails'
-  gem 'zurb-foundation'
-end
-_eof
 #gem 'jquery-rails'
-bundle install
-rails g foundation:install
+
 print_status "Starting Rails Daemon" && rails s -d >/dev/null 2>&1 || die "Unable to start rails daemon!"
 print_good "browse http://localhost:3000 to view the app!"
