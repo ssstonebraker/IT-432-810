@@ -6,7 +6,7 @@
 
 SCRIPTPATH=$( cd "$(dirname "$0")" ; pwd -P ) 
 PROJNAME="Proj1Stonebraker"
-
+PROJPATH="$SCRIPTPATH/$PROJNAME"
 ##################################################################
 # Pretty print functions
 function print_status { echo -e "\x1B[01;34m[*]\x1B[0m $1"; }
@@ -19,18 +19,19 @@ function print_error { echo -e "\x1B[01;31m[*]\x1B[0m $1"; }
 function die { print_error "$1" >&2;exit 1; }
 ##################################################################
 
-[ -f "/tmp/pids/server.pid" ] && print_status "killing running rails server" && kill -INT $(cat tmp/pids/server.pid) 
-[ -d "$SCRIPTPATH/$PROJNAME" ] && print_status "found $PROJNAME in current path... removing" && rm -Rf $SCRIPTPATH/$PROJNAME 
+[ -f "$PROJPATH/tmp/pids/server.pid" ] && print_status "killing running rails server" && kill -INT $(cat $PROJPATH/tmp/pids/server.pid) 
+[ -d "$PROJPATH" ] && print_status "found $PROJNAME in current path... removing" && rm -Rf $PROJPATH 
 
 print_status "Creating new rails project $PROJNAME..."
 
+cd $SCRIPTPATH
 rails new $PROJNAME > /dev/null || die "unable to create $PROJNAME"
 cd $PROJNAME
 
 print_status "Setting up controller ..."
 rails g controller MyInfoSite infopage myfavorites photos  --skip-stylesheets >/dev/null 2>&1 || die "Unable to create controller for $PROJNAME"
 
-cat <<_eof > $SCRIPTPATH/$PROJNAME/Gemfile
+cat <<_eof > $PROJPATH/Gemfile
 source 'https://rubygems.org'
 gem 'rails', '3.2.9'
 gem 'sqlite3'
@@ -43,18 +44,21 @@ end
 gem 'jquery-rails', '~> 2.3.0'
 _eof
 bundle install
-rails g foundation:install
+yes | rails g foundation:install
 print_status "Setting up info page"
 
 
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/my_info_site/infopage.html.erb
-<p>Steve is enrolled in the graduate program at DePaul University in the Network Security program.</p>
+cat <<_eof > $PROJPATH/app/views/my_info_site/infopage.html.erb
+<h1><%= @title %></h1>
+<p>Steve is enrolled in the graduate program at DePaul University and is taking the Network Security track.</p>
+<p>His interests include server administration, networking, and ruby on rails!</p>
 _eof
 
 print_status "setting up my favorites"
 
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/my_info_site/myfavorites.html.erb
-<h2>Favorite Color</h2>
+cat <<_eof > $PROJPATH/app/views/my_info_site/myfavorites.html.erb
+<h1><%= @title %><h1>
+<h2>Color</h2>
 	<p>Purple</p>
 <h2>Food</h2>
 	<p>Pizza</p>
@@ -64,30 +68,96 @@ cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/my_info_site/myfavorites.html.erb
 	<p>Whale</p>
 <h2>Book</h2>
 <p>What to expect when you are expecting</p>
+<h2>Invention</h2>
+<p>Internet</p>
 _eof
 
 print_status "setting up photos"
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/my_info_site/photos.html.erb
-<p>Meet Steve Stonebraker:</p>
-
+cat <<_eof > $PROJPATH/app/views/my_info_site/photos.html.erb
+<h1><%= @title %></h1>
 <table>
 <tr> 
     <td>Head Librarian</td>
     <td>Frieda Farus</td>
     <td><%= image_tag 'frieda.jpg', :class => 'img' %>
+    <td>Import because head Librarian</td>
 </tr>
 
 <tr> 
     <td>Reference Librarian</td>
     <td>Lotus Gergenson</td>
     <td><%= image_tag 'lotus.jpg', :class => 'img' %>
+    <td>He was sent to detention last week</td>
 </tr>
 
 </table>
 _eof
 
+
+
+print_status "Setting up css overrides"
+
+echo "
+\$include-html-top-bar-classes: $include-html-classes;
+\$include-html-nav-classes: $include-html-classes;
+\$topbar-bg: #00006F !default;
+\$topbar-bg: #00006F !default;
+\$topbar-bg-color: #00006F !default;
+\$body-bg: #F4F4F4;
+\$body-bg: #F4F4F4;
+\$body-font-color: #222;
+\$body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+\$body-font-weight: normal;
+\$body-font-style: normal;
+\$font-smoothing: antialiased;
+
+.navigation-area {
+    background-image: url('../img/bg.jpg');
+    background-repeat: repeat-x;
+}
+.top-bar-section {
+  background: $topbar-bg-color !important;
+    li {
+      background: $topbar-bg-color !important;
+      a:not(.button) {
+        background: $topbar-bg-color !important;
+      }
+   }
+
+}
+
+p {
+font-family:"Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+
+}
+table, tr, td, th {margin:0;border:0;padding:0;}
+td {background-color:#f0f8ff;margin:0;border:0;padding:0;}
+tr {background-color:#f0f8ff;margin:0;border:0;padding:0;}
+table{border-collapse:collapse;}
+
+h1 {
+font-family:"Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+font-size: 24pt;
+font-weight: bold;
+color:#F00 ;
+}
+
+li {
+  font-family:"Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif
+}
+
+// Grid Variables
+//
+
+\$column-gutter: em-calc(60);
+
+
+" >> $PROJPATH/app/assets/stylesheets/foundation_and_overrides.scss
+
+
+
 print_status "setting up controller"
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/controllers/my_info_site_controller.rb
+cat <<_eof > $PROJPATH/app/controllers/my_info_site_controller.rb
 class MyInfoSiteController < ApplicationController
   def infopage
         @title = 'Info Page'
@@ -104,7 +174,7 @@ end
 _eof
 
 print_status "setting up application"
-cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/layouts/application.html.erb
+cat <<_eof > $PROJPATH/app/views/layouts/application.html.erb
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -141,16 +211,6 @@ cat <<_eof > $SCRIPTPATH/$PROJNAME/app/views/layouts/application.html.erb
     <div class="large-8 columns">
       <%= yield %>
     </div>
-    <div class="large-4 columns">
-      <h2>About Us</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </div>
-  </div>
   <%= javascript_include_tag "application" %>
 </body>
 </html>
@@ -160,7 +220,7 @@ _eof
 
 
 print_status "setting up images"
-pushd $SCRIPTPATH/$PROJNAME/app/assets/images >/dev/null 2>&1
+pushd $PROJPATH/app/assets/images >/dev/null 2>&1
 curl -O http://condor.depaul.edu/sjost/it231/examples/ex-folder2/frieda.jpg >/dev/null 2>&1 || die "unable to download image"
 curl -O http://condor.depaul.edu/sjost/it231/examples/ex-folder2/lotus.jpg >/dev/null 2>&1 || die "unable to download image"
 popd >/dev/null 2>&1
@@ -173,8 +233,8 @@ print_status "http://localhost:3000/my_info_site/photos"
 print_status "Current Routes:"
 rake routes
 print_status "replacing default route"
-sed -i '' "s/# root :to => 'welcome#index'/root :to => 'my_info_site#infopage'/g" $SCRIPTPATH/$PROJNAME/config/routes.rb
-[ -f $SCRIPTPATH/$PROJNAME/public/index.html ] && /bin/rm $SCRIPTPATH/$PROJNAME/public/index.html
+sed -i '' "s/# root :to => 'welcome#index'/root :to => 'my_info_site#infopage'/g" $PROJPATH/config/routes.rb
+[ -f $PROJPATH/public/index.html ] && /bin/rm $PROJPATH/public/index.html
 
 #gem 'jquery-rails'
 

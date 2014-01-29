@@ -1325,3 +1325,59 @@ $default-float: left;
 // $topbar-arrows: true; //Set false to remove the triangle icon from the menu item
 
 @import 'foundation';
+
+$include-html-top-bar-classes: -html-classes;
+$include-html-nav-classes: -html-classes;
+$topbar-bg: #00006F !default;
+$topbar-bg: #00006F !default;
+$topbar-bg-color: #00006F !default;
+$body-bg: #F4F4F4;
+$body-bg: #F4F4F4;
+$body-font-color: #222;
+$body-font-family: Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif;
+$body-font-weight: normal;
+$body-font-style: normal;
+$font-smoothing: antialiased;
+
+.navigation-area {
+    background-image: url('../img/bg.jpg');
+    background-repeat: repeat-x;
+}
+.top-bar-section {
+  background: -bg-color !important;
+    li {
+      background: -bg-color !important;
+      a:not(.button) {
+        background: -bg-color !important;
+      }
+   }
+
+}
+
+p {
+font-family:Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif;
+
+}
+table, tr, td, th {margin:0;border:0;padding:0;}
+td {background-color:#f0f8ff;margin:0;border:0;padding:0;}
+tr {background-color:#f0f8ff;margin:0;border:0;padding:0;}
+table{border-collapse:collapse;}
+
+h1 {
+font-family:Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif;
+font-size: 24pt;
+font-weight: bold;
+color:#F00 ;
+}
+
+li {
+  font-family:Helvetica Neue, Helvetica, Helvetica, Arial, sans-serif
+}
+
+// Grid Variables
+//
+
+$column-gutter: em-calc(60);
+
+
+
