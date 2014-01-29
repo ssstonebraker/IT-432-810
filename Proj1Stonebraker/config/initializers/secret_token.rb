@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Proj1Stonebraker::Application.config.secret_token = '6a15b43467b94a1cfb6e8e029b6a2713fa26d71c549afdd777a5b4372840e5a2221761b2b4dd5b6c3d8e30ff9a4f4986e3a678a0c8f119d7b2ec528a51a4cba3'
+Proj1Stonebraker::Application.config.secret_token = '90e98d127628f1f5a8a91f44b1210708ee0e497f7e9361e34f61b20b0529ab14135278f27d1cfefc80aa682f4fca3f76d97a0da4b057bdff2b110ec555d18829'
