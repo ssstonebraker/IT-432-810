@@ -1,0 +1,18 @@
+// Place all the styles related to the RandomImage controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+body  { color:black;
+  background-color:#CCFFCC;
+  font-family: 'Arial Black', 'Gadget', sans-serif; }
+
+h1    { color:#CC00FF; }
+
+.ctrl { color:black;
+  background-color:#CCFFCC;
+  font-family: 'Arial Black','Gadget', sans-serif; }
+
+p.a { color:#9999FF; font-family: 'Bookman Old Style', 'Bookman','URW Bookman L','Palatino Linotype',serif; }
+p.b { color:#993300; font-family: 'Consolas','Lucida Console','DejaVu Sans Mono',monospace; }
+p.c { color:#FF0000; font-family: 'Monotype Corsiva','Apple Chancery','ITC Zapf Chancery','URW Chancery L',cursive; }
+p.d { color:#330FFF; font-family: 'Verdana', 'Geneva', 'DejaVu Sans', 'sans-serif'; }
+.img { width: 100px; height: 150px; }

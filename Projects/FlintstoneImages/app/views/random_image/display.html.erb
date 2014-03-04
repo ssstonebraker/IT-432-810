@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>Flintstones Radnomizer</title>
+  <%= stylesheet_link_tag 'examples' %>
+</head>
+
+<body>
+<h1>Flintstones Example</h1>
+
+<p>&nbsp;</p>
+
+<p><%= image_tag @img, :class => 'img' %></p>
+<p><%= @name %></p>
+
+<p class="<%= @pstyle %>"><%= @desc %></p>
+
+<%= yield %>
+
+</body>
+</html>
+
