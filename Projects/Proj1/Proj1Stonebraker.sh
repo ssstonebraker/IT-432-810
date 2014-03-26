@@ -1,8 +1,10 @@
 #!/bin/bash
 #
 # Name: Proj1Stonebraker.sh
-#
-#
+# Author: Steve Stonebraker
+# School: DePaul University
+# Class: IT-432-810
+# Project: First Project
 
 SCRIPTPATH=$( cd "$(dirname "$0")" ; pwd -P ) 
 PROJNAME="Proj1Stonebraker"
